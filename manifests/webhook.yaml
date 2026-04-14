@@ -1,0 +1,27 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: kube-mutator
+webhooks:
+  - name: kube-mutator-webhook.default.svc
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    failurePolicy: Fail
+    clientConfig:
+      service:
+        name: kube-mutator-webhook
+        namespace: default
+        path: "/mutate"
+      caBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURGVENDQWYyZ0F3SUJBZ0lVTTlIaTNEN1JOdTdMYmVOVVg3ZWJnY0EyU3c4d0RRWUpLb1pJaHZjTkFRRUwKQlFBd0dqRVlNQllHQTFVRUF3d1BhM1ZpWlMxdGRYUmhkRzl5TFdOaE1CNFhEVEkyTURReE5ERTJNVGd6TTFvWApEVEkzTURReE5ERTJNVGd6TTFvd0dqRVlNQllHQTFVRUF3d1BhM1ZpWlMxdGRYUmhkRzl5TFdOaE1JSUJJakFOCkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXBFUzNpbG9vdmR6WVRRc0xlOTRsT2Z3QmRVMisKZ2JPSmNkZjk2cUFud2s3MVc1MUhhZ0kzOWdIUVVqWldzRDhYdndPV3Q5eTd0b2FNMTcyZ2pzQzdsYnZoNnhHTgpWUkpTWkt5Q3B5WlNtYm4wTithendEOWt2VzkzMzhlQWlEWG4wNUp3WDlVWUgvN2E0Q0NuTUNpamFrOU5ZTTk0Cm9tTXZFV3JqWHJyZVU2QWF0WU04U2p4bnEvZDlWTVVNcDZOTTJaNk9nMllVRks4R3J4YmxuUmNpWFphNWVNQWMKV1RidnkwT2NydXRZS01pMzdSUTRDT1JDZlYwYzhpV0FPUWxOZzM1VmNOdDFBTnFFakhCYkg5aGJkSkRwcHo2bQpWNHV4MkZKZTdqSzlSaForcmlmYmJLMmpUN0dQRU9NVVRmdnZCTVBESUFKKzFrSGhXS0ZYL2FFdm1RSURBUUFCCm8xTXdVVEFkQmdOVkhRNEVGZ1FVK2kvb2dndXh5a1VobGdFS1BiVmN3QXVtUWNZd0h3WURWUjBqQkJnd0ZvQVUKK2kvb2dndXh5a1VobGdFS1BiVmN3QXVtUWNZd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQgpBUXNGQUFPQ0FRRUFTalNKb3p1T2xDMGRtbi9jRktoWkRvaFVXSmJ1ZmZMS2lhYWxtd0dySlM3RHQ3YzZjYmlCCjFMZHZYdnBmbXRjdTF4TW5GVnpSZkNiOStMU2JxUWZwWmE3eXFPc3A0REpNSWFSdmFkQ3o5aGdpWmdxcytJd20KN3B6amgyNEJhY2VmUWtNZ21UZE1BbzRtMnZSSEpqSXNTQUJBaTBDdEx3MU9kYWhuNXhPOTA5Rml4c3NIUzREWAp4RVBhM3NCUkhTaFB2WlpYVnFFbDQ4Tzh1YXZrbG45RU9BVW9IaUZ5ZWxyNzZtVmF5bWJzNkxBdTJGdzBIaWp6CjRNY09ROExuS2gwQ1hNWUJoN0dIWTFTV0dSV1lFY1B6akJ3RVlBbUxNbnZuZXgyUFMvNmpxclVDNnhmTVpsOXcKUmttaWNUSEtiVnlRd3NwNXJ0dkNtQTJ2anRST1hnR2I5UT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+    rules:
+      - operations: ["CREATE", "UPDATE"]
+        apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        resources: ["deployments"]
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
+            - kube-public
