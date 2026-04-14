@@ -1,0 +1,3 @@
+tls/
+manifests/secret.yaml
+kind-config.yaml
